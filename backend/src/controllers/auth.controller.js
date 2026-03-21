@@ -106,7 +106,8 @@ export const login = asyncHandler( async ( req,res) =>{
     }
 
     // generate token 
-    const token = user.generateAccessToken();
+    const token = await user.generateAccessToken();
+    
 
     const options = {
       httpOnly: true,
@@ -116,12 +117,13 @@ export const login = asyncHandler( async ( req,res) =>{
     };
 
     // set cookies 
-    return res.status(200).
-    cookie('token',token ,options)
+    return res
+    .status(201)
+    .cookie('token',token ,options)
     .json({
         success:true,
         message : "Login successfully",
-        user
+        user,
     })
 })
 
@@ -156,5 +158,24 @@ export const verifyUserEmail = asyncHandler( async (req,res) =>{
             <a href='http://localhost:3000/api/auth/login' >Go to Login</a>
         `
     return res.send(html);
+
+})
+
+// get me 
+export const getMe = asyncHandler (async(req, res) =>{
+    const id = req.user._id; // getting user id from req.user.id set in middleware
+    const user = await User.findById(id).select("-password");
+    if(!user){
+        return res.status(404).json({
+            success:false,
+            message:"User not found",
+            err:"User not found"
+        })
+    }
+    return res.status(200).json({
+        success:true ,
+        message : "Fetched details.",
+        user
+    })
 
 })
