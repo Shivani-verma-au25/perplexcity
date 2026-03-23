@@ -3,6 +3,8 @@ import { connectToDb } from "./src/db/databse.js";
 
 const port = process.env.PORT || 6000;
 
+
+
 // Connect to the database before starting the server
 connectToDb().then(()=>{
         app.listen(3000 ,() => {
