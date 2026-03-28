@@ -6,7 +6,6 @@ import jwt from 'jsonwebtoken'
 export const IsUserVerified = asyncHandler( async (req ,res ,next) => {
     try {
         const token = req.cookies.token || req.header("Authorization")?.replace('Bearer ' ,"");
-        console.log("tkoen" ,token);
         
         if(!token || token === "undefined"){
             return res.status(401).json({

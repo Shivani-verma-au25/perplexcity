@@ -27,8 +27,10 @@ app.use(morgan('dev'))
 
 // importing routes
 import authRouter from './routers/auth.router.js'
+import chatRouter from './routers/chat.router.js'
 
 app.use('/api/auth',authRouter)
+app.use('/api/chats',chatRouter)
 
 
 export default app;
