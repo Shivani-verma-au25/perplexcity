@@ -5,6 +5,8 @@ import { ArrowRight, Menu, X, PlusIcon } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
+
 
 export default function Dashboard() {
   const [chatInput, setchatInput] = useState("");
@@ -18,7 +20,7 @@ export default function Dashboard() {
   const chat = useChat();
   const { user } = useSelector((state) => state.auth);
   const { chats, currentchatId, isLoading } = useSelector(
-    (state) => state.chat
+    (state) => state.chat,
   );
 
   const handleSend = async (e) => {
@@ -50,7 +52,6 @@ export default function Dashboard() {
 
   return (
     <main className="flex h-screen overflow-hidden bg-black text-white">
-      
       {/* Sidebar */}
       <aside
         className={`fixed md:static z-50 top-0 left-0 h-full w-64 bg-gray-950 border-r border-gray-800 transform ${
@@ -91,7 +92,6 @@ export default function Dashboard() {
 
       {/* Main Section */}
       <section className="flex-1 flex flex-col h-screen overflow-hidden">
-        
         {/* Header */}
         <header className="p-4 border-b border-gray-800 flex items-center gap-3">
           <Menu
@@ -103,10 +103,8 @@ export default function Dashboard() {
 
         {/* ✅ Chat container fixed */}
         <div className="flex-1 flex flex-col max-w-4xl w-full mx-auto overflow-hidden">
-          
           {/* ✅ Only this scrolls */}
           <div className="space-y-2 flex-1 overflow-y-auto px-4 py-6 scrollbar-hide">
-            
             {chats && chats[currentchatId]?.messages?.length === 0 && (
               <div className="flex items-center justify-center h-full text-gray-500">
                 <p className="text-3xl">Hello User, how can I help?</p>
@@ -128,7 +126,34 @@ export default function Dashboard() {
                     }`}
                   >
                     {msg.role === "ai" ? (
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                      <ReactMarkdown
+                        components={{
+                          p: ({ children }) => (
+                            <p className="mb-2 last:mb-0">{children}</p>
+                          ),
+                          ul: ({ children }) => (
+                            <ul className="mb-2 list-disc pl-5">{children}</ul>
+                          ),
+                          ol: ({ children }) => (
+                            <ol className="mb-2 list-decimal pl-5">
+                              {children}
+                            </ol>
+                          ),
+                          code: ({ children }) => (
+                            <code className="rounded bg-white/10 px-1 py-0.5">
+                              {children}
+                            </code>
+                          ),
+                          pre: ({ children }) => (
+                            <pre className="mb-2 overflow-x-auto rounded-xl bg-black/30 p-3">
+                              {children}
+                            </pre>
+                          ),
+                        }}
+                        remarkPlugins={[remarkGfm]}
+                      >
+                        {msg.content}
+                      </ReactMarkdown>
                     ) : (
                       msg.content
                     )}
@@ -159,7 +184,6 @@ export default function Dashboard() {
               </button>
             </div>
           </div>
-
         </div>
 
         {isLoading && (
