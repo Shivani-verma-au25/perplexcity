@@ -44,7 +44,6 @@ export const useAuth = () =>{
             dispatch(setLoading(true));
             dispatch(setError(null)) // clear old errors
             const resp = await Getme();
-            console.log("data from get me" ,resp);
             if (resp.success) {
                 dispatch(setUser(resp.user))
             }

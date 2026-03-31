@@ -25,7 +25,7 @@ export const generateResponse = async (messages) =>{
     }
 
   }));
-  return response.text;
+  return response.content;
 
 }
 
