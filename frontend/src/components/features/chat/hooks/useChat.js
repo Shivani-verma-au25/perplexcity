@@ -25,18 +25,22 @@ export const useChat = () => {
       const data = await sendMessage({ message, chatId });
       const { chat, aiMessage } = data;
       //  creating new chat if not exists and adding messages to store
-      dispatch(createNewChat({ 
+      if (!chatId) {
+        dispatch(createNewChat({ 
         chatId : chat._id, 
         title: chat.title }));
+      }
+    
         // creating new message in store
       dispatch(addNewMessage({
-        chatId: chat._id,
+        chatId: chatId || chat._id,
         content: message,
         role: "user",
       })) 
+
       // create new message from ai in store
       dispatch(addNewMessage({
-        chatId: chat._id,
+        chatId: chatId || chat._id,
         content: aiMessage.content,
         role: aiMessage.role,
       }))
