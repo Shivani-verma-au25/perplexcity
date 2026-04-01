@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
-import { ArrowRight, Menu, X, PlusIcon } from "lucide-react";
+import { ArrowRight, Menu, X, PlusIcon, User, Bot, Search, Pencil, Trash2 } from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import remarkGfm from 'remark-gfm'
-
+import remarkGfm from "remark-gfm";
 
 export default function Dashboard() {
   const [chatInput, setchatInput] = useState("");
@@ -73,20 +72,68 @@ export default function Dashboard() {
         </div>
 
         {/* ✅ Sidebar scroll fixed */}
-        <div className="p-3 space-y-2 overflow-y-auto h-[calc(100vh-64px)] scrollbar-hide">
-          {chatInput.length === 0 && (
-            <p className="text-gray-500 text-sm">No chatInput yet</p>
-          )}
+        <div className="p-3 flex flex-col gap-4 overflow-y-auto h-[calc(100vh-64px)] scrollbar-hide">
+          {/* ✅ Create New Chat */}
+          <div className="flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 focus-within:border-gray-600 transition">
+            <PlusIcon size={16} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="New chat..."
+              className="bg-transparent outline-none text-sm text-gray-200 placeholder:text-gray-500 flex-1"
+            />
+          </div>
 
-          {Object.values(chats)?.map((chat, index) => (
-            <div
-              onClick={() => openChat(chat.id)}
-              key={index}
-              className="p-2 bg-gray-800 rounded-md text-sm cursor-pointer hover:bg-gray-700 transition"
-            >
-              {chat.title.slice(0, 30)}...
+          {/* ✅ Search */}
+          <div className="flex items-center gap-2 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 focus-within:border-gray-600 transition">
+            <Search size={16} className="text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search chats..."
+              className="bg-transparent outline-none text-sm text-gray-200 placeholder:text-gray-500 flex-1"
+            />
+          </div>
+
+          {/* ✅ Chat List */}
+          {!chats || Object.values(chats).length === 0 ? (
+            <p className="text-gray-500 text-sm text-center mt-4">
+              No chats yet
+            </p>
+          ) : (
+            <div className="space-y-2">
+              {Object.values(chats)?.map((chat, index) => (
+                <div
+                  key={index}
+                  onClick={() => openChat(chat.id)}
+                  className={`group flex items-center justify-between p-3 rounded-lg text-sm cursor-pointer transition-all duration-200
+            ${
+              currentchatId === chat.id
+                ? "bg-gray-800 border border-gray-700"
+                : "bg-gray-900 hover:bg-gray-800 border border-transparent hover:border-gray-700"
+            }`}
+                >
+                  {/* ✅ Chat Title */}
+                  <p className="text-gray-200 truncate max-w-[70%]">
+                    {chat.title}
+                  </p>
+
+                  {/* ✅ Actions (show on hover) */}
+                  <div className="hidden group-hover:flex items-center gap-2 text-gray-400">
+                    {/* Rename */}
+                    <Pencil
+                      size={14}
+                      className="hover:text-white cursor-pointer"
+                    />
+
+                    {/* Delete */}
+                    <Trash2
+                      size={14}
+                      className="hover:text-red-500 cursor-pointer"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
+          )}
         </div>
       </aside>
 
@@ -117,12 +164,23 @@ export default function Dashboard() {
                   key={msg._id}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
+                  className={`flex items-start gap-2 ${
+                    msg.role === "user" ? "justify-end" : "justify-start"
+                  }`}
                 >
+                  {/* ✅ AI Icon */}
+                  {msg.role === "ai" && (
+                    <div className="w-8 h-8 p-2 flex items-center justify-center rounded-full bg-gray-800">
+                      <Bot size={20} />
+                    </div>
+                  )}
+
+                  {/* ✅ Message Bubble */}
                   <div
-                    className={`p-3 rounded-2xl max-w-full md:max-w-5xl w-fit ${
+                    className={`p-3 rounded-2xl max-w-full md:max-w-5xl ${
                       msg.role === "user"
-                        ? "bg-gray-800 rounded-br-xs ml-auto text-xs md:text-sm px-3 text-gray-200"
-                        : "bg-gray-900 text-xs md:text-sm px-3 rounded-bl-xs text-gray-200"
+                        ? "bg-gray-950 text-gray-200 rounded-br-xs text-xs md:text-sm"
+                        : " text-gray-200 rounded-bl-xs text-xs md:text-sm"
                     }`}
                   >
                     {msg.role === "ai" ? (
@@ -158,6 +216,13 @@ export default function Dashboard() {
                       msg.content
                     )}
                   </div>
+
+                  {/* ✅ User Icon */}
+                  {msg.role === "user" && (
+                    <div className="w-8 h-8 flex items-center justify-center rounded-full bg-white text-black">
+                      <User size={18} />
+                    </div>
+                  )}
                 </motion.div>
               ))}
 
