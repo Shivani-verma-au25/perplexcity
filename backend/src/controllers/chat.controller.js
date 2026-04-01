@@ -8,8 +8,8 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   let title = null;
   let chat = null;
-   console.log("chat id" , chatId);
-   
+  console.log("chat id", chatId);
+
   // create chat
   if (!chatId) {
     title = await genrateChatTitle(message);
@@ -36,6 +36,26 @@ export const sendMessage = asyncHandler(async (req, res) => {
       message: "AI failed to generate response",
     });
   }
+
+  // let aiText = "";
+
+  // if (Array.isArray(result)) {
+  //   aiText = result.map((r) => r.text || "").join(" ");
+  // } else if (typeof result === "object") {
+  //   aiText = result.text || JSON.stringify(result);
+  // } else {
+  //   aiText = String(result);
+  // }
+
+  // console.log("AI result" ,result);
+  
+
+  // // ai message response
+  // const aiMessage = await Message.create({
+  //   chat: chatId || chat._id,
+  //   content: aiText,
+  //   role: "ai",
+  // });
 
   // // ai message respone
   const aiMessage = await Message.create({

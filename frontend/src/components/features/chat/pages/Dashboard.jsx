@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import { useChat } from "../hooks/useChat";
-import { ArrowRight, Menu, X, PlusIcon, User, Bot, Search, Pencil, Trash2 } from "lucide-react";
+import {
+  ArrowRight,
+  Menu,
+  X,
+  PlusIcon,
+  User,
+  Bot,
+  Search,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { useRef } from "react";
 import ReactMarkdown from "react-markdown";
@@ -21,7 +31,7 @@ export default function Dashboard() {
   const { chats, currentchatId, isLoading } = useSelector(
     (state) => state.chat,
   );
-
+  // send message hander
   const handleSend = async (e) => {
     e.preventDefault();
     const trimmedMessage = chatInput.trim();
@@ -35,9 +45,9 @@ export default function Dashboard() {
     setchatInput("");
   };
 
-  const openChat = (chatId) => {
-    console.log("id", chatId);
-    chat.handleOpneChat(chatId);
+  // open chat handler
+  const openChat = (chatId ,) => {
+    chat.handleOpneChat(chatId );
   };
 
   useEffect(() => {
@@ -49,6 +59,8 @@ export default function Dashboard() {
     scrollToBottom();
   }, [chats, currentchatId]);
 
+
+  
   return (
     <main className="flex h-screen overflow-hidden bg-black text-white">
       {/* Sidebar */}
@@ -103,7 +115,7 @@ export default function Dashboard() {
               {Object.values(chats)?.map((chat, index) => (
                 <div
                   key={index}
-                  onClick={() => openChat(chat.id)}
+                  onClick={() => openChat(chat.id )}
                   className={`group flex items-center justify-between p-3 rounded-lg text-sm cursor-pointer transition-all duration-200
             ${
               currentchatId === chat.id
@@ -174,6 +186,12 @@ export default function Dashboard() {
                       <Bot size={20} />
                     </div>
                   )}
+
+                  {/* {isLoading && (
+                    <p className="text-sm text-gray-500 text-center pb-2 animate-pulse animation-all duration-300 ">
+                      AI is thinking...
+                    </p>
+                  )} */}
 
                   {/* ✅ Message Bubble */}
                   <div
@@ -250,12 +268,6 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
-
-        {isLoading && (
-          <p className="text-sm text-gray-500 text-center pb-2">
-            AI is thinking...
-          </p>
-        )}
       </section>
     </main>
   );
