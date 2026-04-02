@@ -8,7 +8,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
 
   let title = null;
   let chat = null;
-  console.log("chat id", chatId);
+  console.log("body : ", req.body);
 
   // create chat
   if (!chatId) {
@@ -29,7 +29,13 @@ export const sendMessage = asyncHandler(async (req, res) => {
     .sort({ createdAt: 1 })
     .limit(10);
 
+  // const formattedMessages = messages.map((msg) => ({
+  //   role: msg.role === "ai" ? "ai" : "user",
+  //   content: msg.content,
+  // }));
+
   const result = await generateResponse(messages);
+
   if (!result) {
     return res.status(500).json({
       success: false,
@@ -37,25 +43,6 @@ export const sendMessage = asyncHandler(async (req, res) => {
     });
   }
 
-  // let aiText = "";
-
-  // if (Array.isArray(result)) {
-  //   aiText = result.map((r) => r.text || "").join(" ");
-  // } else if (typeof result === "object") {
-  //   aiText = result.text || JSON.stringify(result);
-  // } else {
-  //   aiText = String(result);
-  // }
-
-  // console.log("AI result" ,result);
-  
-
-  // // ai message response
-  // const aiMessage = await Message.create({
-  //   chat: chatId || chat._id,
-  //   content: aiText,
-  //   role: "ai",
-  // });
 
   // // ai message respone
   const aiMessage = await Message.create({
@@ -64,7 +51,7 @@ export const sendMessage = asyncHandler(async (req, res) => {
     role: "ai",
   });
 
-  console.log("message", messages);
+  console.log("message", aiMessage);
 
   return res.status(201).json({
     success: true,

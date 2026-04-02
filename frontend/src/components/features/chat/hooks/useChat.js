@@ -52,7 +52,7 @@ export const useChat = () => {
           role: aiMessage.role,
         }),
       );
-      dispatch(setCurrentChatId(chat._id));
+      dispatch(setCurrentChatId(chatId || chat._id));
     } catch (error) {
       console.log("error while creating chat", error);
 
